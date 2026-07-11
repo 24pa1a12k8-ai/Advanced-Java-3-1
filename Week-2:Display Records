@@ -1,0 +1,30 @@
+import java.sql.*;
+
+public class DisplayEmployee {
+
+    public static void main(String args[]) throws Exception {
+
+        Connection con =
+        DriverManager.getConnection(
+        "jdbc:mysql://localhost:3306/company",
+        "root",
+        "vit");
+
+        Statement st=con.createStatement();
+
+        ResultSet rs=st.executeQuery("SELECT * FROM employee");
+
+        while(rs.next())
+        {
+            System.out.println(
+            rs.getInt(1)+" "+
+            rs.getString(2)+" "+
+            rs.getString(3)+" "+
+            rs.getDouble(4));
+        }
+
+        rs.close();
+        st.close();
+        con.close();
+    }
+}
