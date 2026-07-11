@@ -1,0 +1,352 @@
+*Learning Roadmap
+Java Basics
+     ↓
+OOP Concepts
+     ↓
+Exception Handling
+     ↓
+Collections
+     ↓
+File Handling
+     ↓
+JDBC
+     ↓
+Servlets
+     ↓
+JSP
+     ↓
+MVC Architecture
+     ↓
+Spring Framework
+
+->>Step 1: Install Required Software
+
+You need four things.
+
+1. Java JDK
+
+Check whether Java is installed.
+
+java -version
+
+and
+
+javac -version
+
+*Example Output
+
+openjdk version "17"
+javac 17.0.9
+
+->If not installed
+
+Ubuntu
+
+sudo apt update
+sudo apt install openjdk-17-jdk
+
+Verify
+
+java -version
+2. Install MySQL
+
+Ubuntu
+
+sudo apt install mysql-server
+
+Start MySQL
+
+sudo systemctl start mysql
+
+Enable at boot
+
+sudo systemctl enable mysql
+
+Login
+
+sudo mysql
+3. Create Database
+
+Inside MySQL
+
+CREATE DATABASE company;
+
+Use database
+
+USE company;
+
+Verify
+
+SHOW DATABASES;
+4. Download MySQL JDBC Driver
+
+Download
+
+mysql-connector-j-9.x.x.jar
+
+This JAR file connects Java with MySQL.
+
+Suppose it is stored as
+
+/home/user/jdbc/mysql-connector-j-9.3.0.jar
+Step 2: Project Structure
+
+Create folders
+
+JDBCProject
+    |
+    |-- lib
+    |      mysql-connector-j-9.3.0.jar
+    |
+    |-- src
+           Employee.java
+Step 3: Create Employee Table
+
+Login into MySQL
+
+mysql -u root -p
+
+Use database
+
+USE company;
+
+Create table
+
+CREATE TABLE employee
+(
+id INT PRIMARY KEY,
+name VARCHAR(30),
+salary DOUBLE
+);
+
+Check
+
+DESC employee;
+
+Output
+
+id
+name
+salary
+Step 4: JDBC Program
+import java.sql.*;
+
+public class Employee {
+
+    static final String URL =
+            "jdbc:mysql://localhost:3306/company";
+
+    static final String USER = "root";
+
+    static final String PASSWORD = "password";
+
+    public static void main(String args[]) {
+
+        try {
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con =
+                    DriverManager.getConnection(URL, USER, PASSWORD);
+
+            System.out.println("Connected Successfully");
+
+            con.close();
+
+        }
+
+        catch(Exception e) {
+
+            e.printStackTrace();
+
+        }
+
+    }
+
+}
+Step 5: Compile Program
+
+Move to src
+
+cd src
+
+Compile
+
+javac -cp ".:../lib/mysql-connector-j-9.3.0.jar" Employee.java
+Step 6: Execute
+java -cp ".:../lib/mysql-connector-j-9.3.0.jar" Employee
+
+Output
+
+Connected Successfully
+
+Congratulations!
+
+Your first JDBC program is working.
+
+Understanding JDBC Architecture
+Java Program
+      |
+      |
+DriverManager
+      |
+      |
+JDBC Driver
+      |
+      |
+MySQL Database
+JDBC Steps
+
+Every JDBC application follows these 7 steps.
+
+1 Load Driver
+
+2 Create Connection
+
+3 Create Statement
+
+4 Execute Query
+
+5 Process Result
+
+6 Close Resources
+
+7 Exception Handling
+
+Every real-time project follows this sequence.
+
+CRUD Operations
+Insert
+String sql="insert into employee values(101,'Rahul',50000)";
+
+Statement st=con.createStatement();
+
+int rows=st.executeUpdate(sql);
+
+System.out.println(rows+" Record Inserted");
+Display
+String sql="select * from employee";
+
+Statement st=con.createStatement();
+
+ResultSet rs=st.executeQuery(sql);
+
+while(rs.next()){
+
+System.out.println(
+rs.getInt("id")+" "+
+rs.getString("name")+" "+
+rs.getDouble("salary"));
+
+}
+Update
+String sql=
+"update employee set salary=60000 where id=101";
+
+Statement st=con.createStatement();
+
+int rows=st.executeUpdate(sql);
+
+System.out.println(rows+" Updated");
+Delete
+String sql=
+"delete from employee where id=101";
+
+Statement st=con.createStatement();
+
+int rows=st.executeUpdate(sql);
+
+System.out.println(rows+" Deleted");
+Using PreparedStatement (Recommended)
+
+In real-world applications, avoid concatenating user input into SQL. Use PreparedStatement to improve security and performance.
+
+String sql="insert into employee values(?,?,?)";
+
+PreparedStatement ps=con.prepareStatement(sql);
+
+ps.setInt(1,101);
+
+ps.setString(2,"Rahul");
+
+ps.setDouble(3,45000);
+
+ps.executeUpdate();
+
+Advantages
+
+Prevents SQL Injection
+Faster for repeated execution
+Easier to maintain
+Industry standard
+Common JDBC Interfaces
+Interface	Purpose
+DriverManager	Gets database connection
+Connection	Represents DB connection
+Statement	Executes static SQL
+PreparedStatement	Executes parameterized SQL
+CallableStatement	Calls stored procedures
+ResultSet	Holds query results
+Folder Structure in Real-Time Projects
+EmployeeProject/
+
+src/
+
+    dao/
+        EmployeeDAO.java
+
+    model/
+        Employee.java
+
+    util/
+        DBConnection.java
+
+    main/
+        Main.java
+
+This separates:
+
+Model: Data objects (Employee)
+DAO: Database operations (CRUD)
+Utility: Database connection management
+Main: Application entry point
+How This Connects to Servlets and JSP
+
+The same DAO classes are reused in web applications.
+
+Browser
+      |
+Servlet
+      |
+EmployeeDAO
+      |
+JDBC
+      |
+MySQL
+
+This separation of concerns is the basis of the MVC architecture commonly used in Java web development.
+
+Beginner Practice Plan (10 Days)
+Day	Topic
+1	Install Java, MySQL, JDBC Driver
+2	Create database and tables
+3	JDBC Connection
+4	INSERT records
+5	SELECT records
+6	UPDATE records
+7	DELETE records
+8	PreparedStatement
+9	Build an Employee Management System (menu-driven CRUD)
+10	Refactor using DAO and utility classes
+My recommendation for mastering JDBC
+
+Instead of writing one large file, build a small Employee Management System with:
+
+Employee.java (model)
+DBConnection.java (connection utility)
+EmployeeDAO.java (CRUD methods)
+Main.java (menu-driven application using Scanner)
+
+This structure mirrors how JDBC code is organized in professional Java applications and makes the transition to Servlets, JSP, and Spring much smoother.
+
+Once you're comfortable with this console application, the next step is to replace the console interface with a web interface using Servlets and JSP while reusing the same DAO layer.
