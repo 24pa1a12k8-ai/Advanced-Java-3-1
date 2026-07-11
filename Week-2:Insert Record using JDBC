@@ -1,0 +1,26 @@
+import java.sql.*;
+
+public class InsertEmployee {
+
+    public static void main(String args[]) throws Exception {
+
+        Connection con =
+        DriverManager.getConnection(
+        "jdbc:mysql://localhost:3306/company",
+        "root",
+        "vit");
+
+        String sql="INSERT INTO employee VALUES(104,'Scott','Sales',55000)";
+
+        Statement st=con.createStatement();
+
+        int rows=st.executeUpdate(sql);
+
+        System.out.println(rows+" Record Inserted");
+
+        st.close();
+        con.close();
+
+    }
+
+}
